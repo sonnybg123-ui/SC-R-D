@@ -1,0 +1,48 @@
+name: Twelve Data Auth Check
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  auth:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check Twelve Data authentication
+        shell: python
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+        run: |
+          import http.client
+          import json
+          import os
+          import ssl
+          import sys
+
+          result = "TWELVE DATA AUTH FAILED: MISSING CREDENTIAL"
+          connection = None
+          try:
+              key = os.environ.get("TWELVE_DATA_API_KEY", "")
+              if key:
+                  connection = http.client.HTTPSConnection("api.twelvedata.com", timeout=30, context=ssl.create_default_context())
+                  connection.request("GET", "/time_series?symbol=AAPL&exchange=NASDAQ&interval=1min&outputsize=1&timezone=UTC", headers={"Authorization": "apikey " + key})
+                  response = connection.getresponse()
+                  if response.status != 200:
+                      result = f"TWELVE DATA AUTH FAILED: HTTP {response.status}"
+                  else:
+                      payload = json.loads(response.read(65536))
+                      if isinstance(payload, dict) and payload.get("status") == "ok" and isinstance(payload.get("values"), list) and payload["values"]:
+                          result = "TWELVE DATA AUTH OK"
+                      elif isinstance(payload, dict) and type(payload.get("code")) is int:
+                          result = f"TWELVE DATA AUTH FAILED: PROVIDER {payload['code']}"
+                      else:
+                          result = "TWELVE DATA AUTH FAILED: INVALID RESPONSE"
+                  response.close()
+          except Exception:
+              result = "TWELVE DATA AUTH FAILED: NETWORK OR INVALID RESPONSE"
+          finally:
+              if connection is not None:
+                  connection.close()
+          print(result)
+          sys.exit(0 if result == "TWELVE DATA AUTH OK" else 1)
