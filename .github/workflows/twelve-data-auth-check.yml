@@ -12,7 +12,7 @@ jobs:
       - name: Check Twelve Data authentication
         shell: python
         env:
-          TWELVE_DATA_API_KEY: ${{ secrets.TWELVE_DATA_API_KEY }}
+          TWELVE_DATA_API_KEY: ${{ secrets.twelvedata_api }}
         run: |
           import http.client
           import json
