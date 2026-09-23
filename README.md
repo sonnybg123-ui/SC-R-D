@@ -118,3 +118,19 @@ hindsight, train strategies, or simulate a shared-capital portfolio.
 
 See [batch research details](docs/BATCH_RESEARCH.md) for the input contract,
 cost equations, limitations and reproducibility instructions.
+
+## Strategy Lab: causal signals and walk-forward research
+
+```bash
+python -m sc_rd lab examples/strategy_lab.json --output reports
+```
+
+The synthetic example freezes Victor, Alpha and Beta rolling-range breakout
+variants. Signals use completed candles; paper entries use the following open.
+Rolling training windows choose candidates before each subsequent test window.
+The final holdout stays hidden by default. An explicit `--include-holdout`
+reveals only the final training-selected candidate and fixed baseline; once
+viewed, that period is no longer an untouched sample.
+
+See [Strategy Lab](docs/STRATEGY_LAB.md) for the exact rules, gaps, timeouts,
+selection criteria, window reset assumptions and evidence limitations.

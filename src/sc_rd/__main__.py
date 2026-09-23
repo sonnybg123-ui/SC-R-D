@@ -60,6 +60,12 @@ def _batch(args: argparse.Namespace) -> None:
     print(run_batch(args.config, args.output))
 
 
+def _lab(args: argparse.Namespace) -> None:
+    from .lab import run_lab
+
+    print(run_lab(args.config, args.output, include_holdout=args.include_holdout))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sc-rd", description="SC Trading R&D paper research tools")
     subs = parser.add_subparsers(dest="command", required=True)
@@ -96,6 +102,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("config", type=Path)
     p.add_argument("--output", type=Path, default=Path("reports"))
     p.set_defaults(func=_batch)
+    p = subs.add_parser("lab", help="evaluate causal signals with walk-forward selection")
+    p.add_argument("config", type=Path)
+    p.add_argument("--output", type=Path, default=Path("reports"))
+    p.add_argument("--include-holdout", action="store_true",
+                   help="explicitly reveal the final holdout; do not retune on it afterwards")
+    p.set_defaults(func=_lab)
     return parser
 
 

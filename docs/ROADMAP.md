@@ -14,7 +14,7 @@
 - [x] explicit same-candle ambiguity policy
 - [x] command-line tools
 - [x] automated tests
-- [ ] publish foundation to GitHub
+- [x] publish foundation to GitHub
 
 ## Phase 2 — Evidence pipeline
 
@@ -47,3 +47,13 @@
 ## Phase 5 — Only after evidence
 
 Evaluate whether any broker integration is justified. Live execution is not part of the current system and must be a separate reviewed phase.
+
+## Implemented research milestones
+
+- Reproducible frozen-plan batches with cost assumptions and holdout reports.
+- Causal rolling-range signals and next-open fills.
+- Rolling training-only selection across frozen Victor / Alpha / Beta variants.
+- Final holdout withheld by default; explicit revelation recorded in run identity.
+- Future-data mutation tests and deterministic output verification.
+
+Next implementation: stateful paper cash/position ledger and cost-inclusive portfolio risk gates. External market data, continuous portfolio simulation and live execution remain unimplemented.
