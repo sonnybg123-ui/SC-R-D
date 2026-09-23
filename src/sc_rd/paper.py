@@ -119,6 +119,40 @@ def close_position(state: dict, position_id: str, price: Decimal, at: str, reaso
     return {"status": "closed", "trade": closed, "cash_delta": text(cash_delta)}
 
 
+def apply_bar(state: dict, symbol: str, candle: dict, at: str) -> dict:
+    if not isinstance(symbol, str) or not symbol.strip():
+        raise ValueError("nonempty bar symbol required")
+    if symbol in state["last_bars"] and instant(at) <= instant(state["last_bars"][symbol]):
+        return {"status": "rejected", "reason": "candle already processed", "cash_delta": "0"}
+    op, high, low, close = (number(candle[key]) for key in ("open", "high", "low", "close"))
+    if not (low <= op <= high and low <= close <= high):
+        raise ValueError("invalid OHLC range")
+    exits = []
+    for pid, pos in list(state["positions"].items()):
+        if pos["symbol"] != symbol:
+            continue
+        stop, target = D(pos["stop"]), D(pos["target"])
+        long = pos["direction"] == "long"
+        stop_gap = op <= stop if long else op >= stop
+        target_gap = op >= target if long else op <= target
+        hit_stop = low <= stop if long else high >= stop
+        hit_target = high >= target if long else low <= target
+        if stop_gap:
+            exits.append(close_position(state, pid, op, at, "opening-gap-stop"))
+        elif target_gap:
+            exits.append(close_position(state, pid, target, at, "opening-target"))
+        elif hit_stop:
+            reason = "ambiguous-conservative-stop" if hit_target else "stop"
+            exits.append(close_position(state, pid, stop, at, reason))
+        elif hit_target:
+            exits.append(close_position(state, pid, target, at, "target"))
+    state["last_bars"][symbol] = at
+    state["marks"][symbol] = {"price": text(close), "at": at}
+    result = {"status": "processed", "exits": exits,
+              "cash_delta": text(sum((D(e["cash_delta"]) for e in exits), ZERO))}
+    return result
+
+
 def reduce_event(previous: dict | None, request: dict) -> tuple[dict, dict]:
     """Pure reducer; the same requests must reproduce every stored snapshot."""
     with localcontext() as context:
@@ -215,7 +249,7 @@ def _reduce(previous: dict | None, r: dict) -> tuple[dict, dict]:
         price = number(r["price"])
         if r["position_id"] not in state["positions"]:
             return rejected(state, "position is not open")
-        result = close_position(state, r["position_id"], price, r["at"], "manual-paper-exit")
+        result = close_position(state, r["position_id"], price, r["at"], r.get("reason", "manual-paper-exit"))
     elif kind == "mark":
         if not r["prices"]:
             raise ValueError("at least one mark required")
@@ -225,37 +259,20 @@ def _reduce(previous: dict | None, r: dict) -> tuple[dict, dict]:
             state["marks"][symbol] = {"price": text(number(price)), "at": r["at"]}
         result = {"status": "marked", "cash_delta": "0"}
     elif kind == "bar":
-        symbol = r["symbol"]
-        if not isinstance(symbol, str) or not symbol.strip():
-            raise ValueError("nonempty bar symbol required")
-        if symbol in state["last_bars"] and instant(r["at"]) <= instant(state["last_bars"][symbol]):
-            return rejected(state, "candle already processed")
-        op, high, low, close = (number(r["candle"][key]) for key in ("open", "high", "low", "close"))
-        if not (low <= op <= high and low <= close <= high):
-            raise ValueError("invalid OHLC range")
-        exits = []
-        for pid, pos in list(state["positions"].items()):
-            if pos["symbol"] != symbol:
-                continue
-            stop, target = D(pos["stop"]), D(pos["target"])
-            long = pos["direction"] == "long"
-            stop_gap = op <= stop if long else op >= stop
-            target_gap = op >= target if long else op <= target
-            hit_stop = low <= stop if long else high >= stop
-            hit_target = high >= target if long else low <= target
-            if stop_gap:
-                exits.append(close_position(state, pid, op, r["at"], "opening-gap-stop"))
-            elif target_gap:
-                exits.append(close_position(state, pid, target, r["at"], "opening-target"))
-            elif hit_stop:
-                reason = "ambiguous-conservative-stop" if hit_target else "stop"
-                exits.append(close_position(state, pid, stop, r["at"], reason))
-            elif hit_target:
-                exits.append(close_position(state, pid, target, r["at"], "target"))
-        state["last_bars"][symbol] = r["at"]
-        state["marks"][symbol] = {"price": text(close), "at": r["at"]}
-        result = {"status": "processed", "exits": exits,
-                  "cash_delta": text(sum((D(e["cash_delta"]) for e in exits), ZERO))}
+        result = apply_bar(state, r["symbol"], r["candle"], r["at"])
+        if result["status"] == "rejected":
+            return state, result
+    elif kind == "bars":
+        if not isinstance(r["candles"], dict) or not r["candles"]:
+            raise ValueError("nonempty candle mapping required")
+        # Reject the entire batch before any symbol can mutate state.
+        for symbol in r["candles"]:
+            if symbol in state["last_bars"] and instant(r["at"]) <= instant(state["last_bars"][symbol]):
+                return rejected(state, "candle already processed")
+        outcomes = {symbol: apply_bar(state, symbol, r["candles"][symbol], r["at"])
+                    for symbol in sorted(r["candles"])}
+        result = {"status": "processed", "bars": outcomes,
+                  "cash_delta": text(sum((D(o["cash_delta"]) for o in outcomes.values()), ZERO))}
     else:
         raise ValueError("unsupported paper command")
     refresh(state)
@@ -372,8 +389,11 @@ class PaperBroker:
         return self._command("open", command_id, at, plan=asdict(plan), desk=desk,
                              quantity=None if quantity is None else str(quantity))
 
-    def close(self, position_id: str, price: float, *, command_id: str, at: str) -> dict:
-        return self._command("close", command_id, at, position_id=position_id, price=str(price))
+    def close(self, position_id: str, price: float, *, command_id: str, at: str, reason: str | None = None) -> dict:
+        payload = {} if reason is None else {"reason": reason}
+        if reason is not None and reason not in {"replay-opening-gap-stop", "replay-opening-target", "replay-timeout", "replay-end"}:
+            raise ValueError("unsupported paper exit reason")
+        return self._command("close", command_id, at, position_id=position_id, price=str(price), **payload)
 
     def mark(self, prices: dict, *, command_id: str, at: str) -> dict:
         if not isinstance(prices, dict):
@@ -384,6 +404,16 @@ class PaperBroker:
         values = asdict(candle)
         values.pop("timestamp")
         return self._command("bar", command_id, candle.timestamp, symbol=symbol, candle=values)
+
+    def process_bars(self, candles: dict[str, Candle], *, command_id: str) -> dict:
+        if not isinstance(candles, dict) or not candles:
+            raise ValueError("nonempty candle mapping required")
+        times = {instant(c.timestamp) for c in candles.values()}
+        if len(times) != 1:
+            raise ValueError("batch candles must have the same timestamp")
+        values = {symbol: {k: v for k, v in asdict(c).items() if k != "timestamp"}
+                  for symbol, c in candles.items()}
+        return self._command("bars", command_id, next(iter(times)).isoformat(), candles=values)
 
     def snapshot(self) -> dict:
         connection = self._connect()

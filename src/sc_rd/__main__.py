@@ -66,6 +66,12 @@ def _lab(args: argparse.Namespace) -> None:
     print(run_lab(args.config, args.output, include_holdout=args.include_holdout))
 
 
+def _portfolio(args: argparse.Namespace) -> None:
+    from .portfolio import run_portfolio
+
+    print(run_portfolio(args.config, args.output, period=args.period))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sc-rd", description="SC Trading R&D paper research tools")
     subs = parser.add_subparsers(dest="command", required=True)
@@ -110,6 +116,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.set_defaults(func=_lab)
     from .paper_cli import configure
     configure(subs)
+    p = subs.add_parser("portfolio", help="replay causal strategies through a shared-cash paper broker")
+    p.add_argument("config", type=Path)
+    p.add_argument("--output", type=Path, default=Path("reports"))
+    p.add_argument("--period", choices=["development", "holdout"], default="development",
+                   help="holdout explicitly consumes the reserved final period")
+    p.set_defaults(func=_portfolio)
     return parser
 
 

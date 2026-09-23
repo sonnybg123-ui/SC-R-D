@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "datasets": {
+    "SYNTH-A": "../data/portfolio_ohlc.csv",
+    "SYNTH-B": "../data/portfolio_ohlc.csv"
+  },
+  "initial_cash": 1000,
+  "limits": {
+    "max_trade_risk": 25,
+    "max_total_risk": 50,
+    "max_gross_exposure": 2000,
+    "max_positions": 2,
+    "max_drawdown": 500,
+    "max_mark_age_seconds": 3600
+  },
+  "costs": {
+    "fee_per_side": 0.1,
+    "fee_bps": 1,
+    "spread_bps": 2,
+    "slippage_bps": 1
+  },
+  "holdout_bars": 4,
+  "end_policy": "liquidate",
+  "minimum_trades": 30,
+  "experiments": [
+    {
+      "name": "Victor baseline portfolio",
+      "allocations": [
+        {
+          "id": "victor-a",
+          "symbol": "SYNTH-A",
+          "priority": 0,
+          "risk_budget": 20,
+          "strategy": {
+            "name": "victor-baseline",
+            "desk": "victor",
+            "lookback": 3,
+            "reward_r": 1.5,
+            "max_holding_bars": 2,
+            "direction": "both"
+          }
+        },
+        {
+          "id": "victor-b",
+          "symbol": "SYNTH-B",
+          "priority": 1,
+          "risk_budget": 20,
+          "strategy": {
+            "name": "victor-baseline",
+            "desk": "victor",
+            "lookback": 3,
+            "reward_r": 1.5,
+            "max_holding_bars": 2,
+            "direction": "both"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Mixed desk portfolio",
+      "allocations": [
+        {
+          "id": "alpha-a",
+          "symbol": "SYNTH-A",
+          "priority": 0,
+          "risk_budget": 20,
+          "strategy": {
+            "name": "alpha-fast",
+            "desk": "alpha",
+            "lookback": 2,
+            "reward_r": 2,
+            "max_holding_bars": 2,
+            "direction": "both"
+          }
+        },
+        {
+          "id": "beta-b",
+          "symbol": "SYNTH-B",
+          "priority": 1,
+          "risk_budget": 20,
+          "strategy": {
+            "name": "beta-slow",
+            "desk": "beta",
+            "lookback": 5,
+            "reward_r": 1,
+            "max_holding_bars": 3,
+            "direction": "both"
+          }
+        },
+        {
+          "id": "victor-a",
+          "symbol": "SYNTH-A",
+          "priority": 2,
+          "risk_budget": 20,
+          "strategy": {
+            "name": "victor-baseline",
+            "desk": "victor",
+            "lookback": 3,
+            "reward_r": 1.5,
+            "max_holding_bars": 2,
+            "direction": "both"
+          }
+        }
+      ]
+    }
+  ]
+}

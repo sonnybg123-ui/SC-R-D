@@ -58,4 +58,6 @@ Evaluate whether any broker integration is justified. Live execution is not part
 
 Stateful paper broker implemented: Decimal cash/position accounting, atomic SQLite ledger replay, cost-inclusive admission and portfolio limits.
 
-Next implementation: connect causal signals to a deterministic shared-cash replay coordinator. External market data, automatic strategy-to-portfolio replay and live execution remain unimplemented.
+Shared-cash replay implemented: fixed-priority causal strategy allocations, synchronized multi-symbol bars, atomic closing valuation, explicit terminal position policy and verified portfolio reports.
+
+Next implementation: research-data provenance/quality gates and frozen walk-forward selection linked to portfolio replay. External market-data downloads, asynchronous feeds and live execution remain unimplemented.

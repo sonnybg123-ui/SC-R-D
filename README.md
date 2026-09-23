@@ -151,3 +151,19 @@ The offline broker uses Decimal accounting, atomic SQLite events, idempotent
 commands, cost-inclusive entry sizing and portfolio risk gates. Database files
 remain local and ignored by Git. See [paper broker](docs/PAPER_BROKER.md) for
 commands, collateral assumptions, reconciliation and limitations.
+
+## Shared-cash chronological replay
+
+```bash
+python -m sc_rd portfolio examples/portfolio.json --output reports
+```
+
+This connects causal Strategy Lab signals to the persistent paper broker.
+Allocations inside each portfolio compete for shared cash and risk capacity by
+fixed priority. Separate baseline and mixed-desk experiments use identical limits.
+Entries use next opens; no entry can spend profits from later in the same candle.
+Each run produces audited SQLite ledgers, an equity curve, order/rejection traces,
+JSON results and a Markdown comparison. The final holdout is excluded by default.
+
+See [portfolio replay](docs/PORTFOLIO_REPLAY.md) for synchronized data requirements,
+timing, holdout opt-in and explicit end-of-run position policies.
