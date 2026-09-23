@@ -1,0 +1,45 @@
+name: T212 Demo Auth Check
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  demo-auth:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check demo authentication
+        shell: python
+        env:
+          T212_DEMO_API_KEY: ${{ secrets.T212_DEMO_API_KEY }}
+          T212_DEMO_API_SECRET: ${{ secrets.T212_DEMO_API_SECRET }}
+        run: |
+          import base64
+          import http.client
+          import os
+          import ssl
+
+          status = 0
+          connection = None
+          try:
+              key = os.environ.get("T212_DEMO_API_KEY", "")
+              secret = os.environ.get("T212_DEMO_API_SECRET", "")
+              if key and secret:
+                  authorization = base64.b64encode((key + ":" + secret).encode("utf-8")).decode("ascii")
+                  connection = http.client.HTTPSConnection(
+                      "demo.trading212.com", timeout=30, context=ssl.create_default_context()
+                  )
+                  connection.request(
+                      "GET", "/api/v0/equity/portfolio",
+                      headers={"Authorization": "Basic " + authorization}
+                  )
+                  response = connection.getresponse()
+                  status = response.status
+                  response.close()
+          except Exception:
+              status = 0
+          finally:
+              if connection is not None:
+                  connection.close()
+          print("DEMO AUTH OK" if status == 200 else f"DEMO AUTH FAILED: HTTP {status:03d}")
