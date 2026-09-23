@@ -54,6 +54,12 @@ def _resolve(args: argparse.Namespace) -> None:
     print(outcome)
 
 
+def _batch(args: argparse.Namespace) -> None:
+    from .research import run_batch
+
+    print(run_batch(args.config, args.output))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="sc-rd", description="SC Trading R&D paper research tools")
     subs = parser.add_subparsers(dest="command", required=True)
@@ -86,13 +92,20 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--timeframe", default="15m")
     p.add_argument("--ambiguous", choices=["conservative", "optimistic", "skip"], default="conservative")
     p.set_defaults(func=_resolve)
+    p = subs.add_parser("batch", help="run frozen paper experiments with costs and a chronological holdout")
+    p.add_argument("config", type=Path)
+    p.add_argument("--output", type=Path, default=Path("reports"))
+    p.set_defaults(func=_batch)
     return parser
 
 
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-    args.func(args)
+    try:
+        args.func(args)
+    except (ValueError, TypeError, KeyError, OSError) as exc:
+        parser.error(str(exc))
 
 
 if __name__ == "__main__":

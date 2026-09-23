@@ -98,3 +98,23 @@ is included. Keep local journals and private datasets outside version control.
 Target architecture:
 Market Data -> Scanner -> Strategy Lab -> Victor / Alpha / Beta experiments ->
 Risk Engine -> Paper Broker -> Ledger -> Performance Analysis -> Research Conclusions.
+
+## Batch research pipeline
+
+```bash
+python -m sc_rd batch examples/batch.json --output reports
+```
+
+This offline synthetic example compares frozen Victor, Alpha and Beta plans.
+Each run writes `results.json` and `report.md` into a SHA-256 run directory.
+Dataset bytes, canonical method configuration and package source code determine
+the run identity. Identical runs cannot overwrite existing evidence.
+
+The pipeline validates chronological timezone-aware candles, applies explicit
+fees/spread/slippage, prevents trades crossing from the in-sample period into
+the holdout, and reports net R, unresolved outcomes and sample-size warnings.
+It evaluates supplied plans; it does not claim those plans were selected without
+hindsight, train strategies, or simulate a shared-capital portfolio.
+
+See [batch research details](docs/BATCH_RESEARCH.md) for the input contract,
+cost equations, limitations and reproducibility instructions.

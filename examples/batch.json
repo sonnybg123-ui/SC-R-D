@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "dataset": "../data/research_ohlc.csv",
+  "symbol": "SYNTH",
+  "split_at": "2026-02-01T00:00:00Z",
+  "costs": {
+    "fee_per_side": 0.1,
+    "fee_bps": 1,
+    "spread_bps": 2,
+    "slippage_bps": 1
+  },
+  "ambiguous_policy": "conservative",
+  "minimum_trades": 30,
+  "experiments": [
+    {
+      "name": "victor-synthetic",
+      "hypothesis": "Synthetic wiring check; no market edge claimed.",
+      "desk": "victor",
+      "trades": [
+        {
+          "entry_at": "2026-01-01T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 95,
+            "target": 110,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-01-02T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 95,
+            "target": 110,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-02-01T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 95,
+            "target": 110,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-02-02T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 95,
+            "target": 110,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        }
+      ]
+    },
+    {
+      "name": "alpha-synthetic",
+      "hypothesis": "Synthetic wiring check; no market edge claimed.",
+      "desk": "alpha",
+      "trades": [
+        {
+          "entry_at": "2026-01-01T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 97,
+            "target": 106,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-01-02T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 97,
+            "target": 106,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-02-01T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 97,
+            "target": 106,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-02-02T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 97,
+            "target": 106,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        }
+      ]
+    },
+    {
+      "name": "beta-synthetic",
+      "hypothesis": "Synthetic wiring check; no market edge claimed.",
+      "desk": "beta",
+      "trades": [
+        {
+          "entry_at": "2026-01-01T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 93,
+            "target": 112,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        },
+        {
+          "entry_at": "2026-02-01T09:00:00Z",
+          "plan": {
+            "symbol": "SYNTH",
+            "direction": "long",
+            "entry": 100,
+            "stop": 93,
+            "target": 112,
+            "risk_budget": 20,
+            "setup": "synthetic"
+          }
+        }
+      ]
+    }
+  ]
+}
