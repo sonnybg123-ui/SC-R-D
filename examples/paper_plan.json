@@ -1,0 +1,10 @@
+{
+  "symbol": "SYNTH",
+  "direction": "long",
+  "entry": 100,
+  "stop": 95,
+  "target": 110,
+  "risk_budget": 20,
+  "setup": "synthetic-demo",
+  "timeframe": "15m"
+}

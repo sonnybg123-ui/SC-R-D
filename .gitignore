@@ -34,3 +34,4 @@ Thumbs.db
 pytest-cache-files-*/
 !data/research_ohlc.csv
 !data/strategy_ohlc.csv
+*.db-*

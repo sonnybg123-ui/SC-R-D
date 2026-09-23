@@ -108,6 +108,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--include-holdout", action="store_true",
                    help="explicitly reveal the final holdout; do not retune on it afterwards")
     p.set_defaults(func=_lab)
+    from .paper_cli import configure
+    configure(subs)
     return parser
 
 

@@ -134,3 +134,20 @@ viewed, that period is no longer an untouched sample.
 
 See [Strategy Lab](docs/STRATEGY_LAB.md) for the exact rules, gaps, timeouts,
 selection criteria, window reset assumptions and evidence limitations.
+
+## Stateful paper broker and ledger
+
+```bash
+python -m sc_rd paper demo data/local/paper-demo.db
+python -m sc_rd paper status data/local/paper-demo.db
+python -m sc_rd paper audit data/local/paper-demo.db
+```
+
+The demo creates synthetic cash, executes a long and a collateralized short,
+records a rejected order, processes exits and verifies the reloaded ledger.
+Existing databases are never overwritten. Use a new filename for another demo.
+
+The offline broker uses Decimal accounting, atomic SQLite events, idempotent
+commands, cost-inclusive entry sizing and portfolio risk gates. Database files
+remain local and ignored by Git. See [paper broker](docs/PAPER_BROKER.md) for
+commands, collateral assumptions, reconciliation and limitations.

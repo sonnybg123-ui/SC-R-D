@@ -56,4 +56,6 @@ Evaluate whether any broker integration is justified. Live execution is not part
 - Final holdout withheld by default; explicit revelation recorded in run identity.
 - Future-data mutation tests and deterministic output verification.
 
-Next implementation: stateful paper cash/position ledger and cost-inclusive portfolio risk gates. External market data, continuous portfolio simulation and live execution remain unimplemented.
+Stateful paper broker implemented: Decimal cash/position accounting, atomic SQLite ledger replay, cost-inclusive admission and portfolio limits.
+
+Next implementation: connect causal signals to a deterministic shared-cash replay coordinator. External market data, automatic strategy-to-portfolio replay and live execution remain unimplemented.

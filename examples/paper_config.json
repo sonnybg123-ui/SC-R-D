@@ -1,0 +1,16 @@
+{
+  "limits": {
+    "max_trade_risk": 25,
+    "max_total_risk": 50,
+    "max_gross_exposure": 2000,
+    "max_positions": 2,
+    "max_drawdown": 500,
+    "max_mark_age_seconds": 3600
+  },
+  "costs": {
+    "fee_per_side": 0.1,
+    "fee_bps": 1,
+    "spread_bps": 2,
+    "slippage_bps": 1
+  }
+}
