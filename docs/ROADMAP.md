@@ -60,4 +60,12 @@ Stateful paper broker implemented: Decimal cash/position accounting, atomic SQLi
 
 Shared-cash replay implemented: fixed-priority causal strategy allocations, synchronized multi-symbol bars, atomic closing valuation, explicit terminal position policy and verified portfolio reports.
 
-Next implementation: research-data provenance/quality gates and frozen walk-forward selection linked to portfolio replay. External market-data downloads, asynchronous feeds and live execution remain unimplemented.
+Implemented: declared data provenance/hash/coverage/cadence gates; frozen rolling portfolio selection; hourly/manual paper-only GitHub Actions workflow; unique 14-day report/ledger artifacts; provisional-only synthetic findings; canonical Vic/Alpha/Beta/Ben/Jah department.
+
+Next: verify cloud execution, then define reviewed agent-to-experiment proposals and result handoff to Vic. Add authorized real research datasets, source/calendar checks, preregistered evidence validation and durable archival. External feeds, autonomous ChatGPT handoff, persistent cross-run accounts and live execution remain unimplemented.
+
+## Real-data gateway status
+
+Implemented locally: Twelve Data OHLC adapter, explicit source/identity checks, single-session quality gates, provenance SHA-256, verified cache reuse, protected-holdout Lab and single-instrument portfolio adapters, and TEST_ONLY software-output classification. Authentication passed. A genuine cached dataset plus non-holdout research smoke run is still required before calling this milestone complete.
+
+T212 metadata integration, independently verified broker identity mapping and Practice order placement remain unimplemented. No live order path exists. Staff: Vic / Alpha / Beta / Ben / Jah. Next milestone requires Sonny's review; do not automatically start a Practice broker bridge.

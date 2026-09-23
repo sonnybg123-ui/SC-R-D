@@ -36,3 +36,6 @@ pytest-cache-files-*/
 !data/strategy_ohlc.csv
 *.db-*
 !data/portfolio_ohlc.csv
+
+# Downloaded research datasets and provider cache
+data/cache/

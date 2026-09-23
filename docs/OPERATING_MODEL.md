@@ -4,13 +4,15 @@
 
 Turn trading ideas into reproducible evidence before they become beliefs.
 
-## Desks
+## Canonical five-agent department
 
-- **Victor — Lead / Teacher:** converts experiments into plain-English lessons and decides what needs more evidence.
-- **Alpha — Aggressive Risk Lab:** stress-tests high-risk paper setups and looks for nonlinear upside *and* failure modes.
-- **Beta — Unconventional Risk Lab:** challenges sizing, volatility, stop placement, and assumptions in paper only.
-- **Structure — Market Structure:** maintains HH/HL/LH/LL, swing-point, invalidation, and timeframe discipline.
-- **Ledger — Audit & Statistics:** owns journals, metrics, experiment IDs, sample-size warnings, and reproducibility.
+- **Vic:** lead and teacher; existing `victor` identifiers remain compatible.
+- **Alpha:** aggressive paper strategy experiments.
+- **Beta:** unconventional paper strategy experiments.
+- **Benjamin Vale / Ben:** fundamental, catalyst, materiality and Guardian perspective.
+- **Jah:** execution operations, data quality, reconciliation and log integrity.
+
+Structure is a research concept, and ledger is software infrastructure. Neither is a staff agent. The cloud runner executes frozen configurations; it does not yet connect or run the five ChatGPT agents.
 
 ## Research loop
 

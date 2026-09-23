@@ -87,7 +87,7 @@ def evaluate_lab(config: dict, base_dir: Path, *, include_holdout: bool = False)
     config_hash = digest(canonical(method).encode())
     identity = {"kind": "strategy-lab-v1", "dataset": dataset_hash, "config": config_hash,
                 "engine": engine_hash, "include_holdout": include_holdout}
-    return {"mode": "paper-research-only", "schema_version": 1, "run_id": digest(canonical(identity).encode()),
+    return {"data_classification": "SYNTHETIC", "evidence_status": "TEST_ONLY", "evidence_eligible": False, "mode": "paper-research-only", "schema_version": 1, "run_id": digest(canonical(identity).encode()),
             "dataset_sha256": dataset_hash, "config_sha256": config_hash, "engine_sha256": engine_hash,
             "config": method, "dataset_rows": len(candles), "holdout_start": development_end,
             "holdout_status": "revealed-do-not-retune-on-this-period" if include_holdout else "withheld",
@@ -105,7 +105,7 @@ def lab_markdown(result: dict) -> str:
         mean = f"{s['net_metrics']['average_r']:.4f}" if s["closed"] else "N/A"
         return f"| {clean(label)} | {s['submitted']} | {s['closed']} | {s['open']} | {s['ambiguous']} | {mean} |"
 
-    lines = ["# SC Trading R&D Strategy Lab", "", "Paper research only; no broker or live execution.",
+    lines = ["TEST_ONLY — software-test output; excluded from trading evidence.", "", "# SC Trading R&D Strategy Lab", "", "Paper research only; no broker or live execution.",
              "Bundled synthetic fixtures are wiring checks, not evidence of a market edge.", "",
              f"Run: `{result['run_id']}`", f"Dataset SHA-256: `{result['dataset_sha256']}`",
              f"Method SHA-256: `{result['config_sha256']}`", f"Engine SHA-256: `{result['engine_sha256']}`", "",

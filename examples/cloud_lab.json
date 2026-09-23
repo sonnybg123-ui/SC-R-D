@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "dataset": "../data/portfolio_ohlc.csv",
+  "symbol": "SYNTH",
+  "risk_budget": 20,
+  "costs": {
+    "fee_per_side": 0.1,
+    "fee_bps": 1,
+    "spread_bps": 2,
+    "slippage_bps": 1
+  },
+  "ambiguous_policy": "conservative",
+  "minimum_trades": 3,
+  "train_bars": 8,
+  "test_bars": 4,
+  "holdout_bars": 4,
+  "baseline": "victor-baseline",
+  "candidates": [
+    {
+      "name": "victor-baseline",
+      "desk": "victor",
+      "lookback": 3,
+      "reward_r": 1.5,
+      "max_holding_bars": 2,
+      "direction": "both"
+    },
+    {
+      "name": "alpha-fast",
+      "desk": "alpha",
+      "lookback": 2,
+      "reward_r": 2,
+      "max_holding_bars": 2,
+      "direction": "both"
+    },
+    {
+      "name": "beta-slow",
+      "desk": "beta",
+      "lookback": 5,
+      "reward_r": 1,
+      "max_holding_bars": 3,
+      "direction": "both"
+    }
+  ]
+}

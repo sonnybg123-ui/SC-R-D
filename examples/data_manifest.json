@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "datasets": {
+    "SYNTH-A": {
+      "kind": "synthetic",
+      "source": "Committed locally generated deterministic fixture",
+      "license": "Repository research fixture",
+      "currency": "SIM",
+      "normalized_timezone": "UTC",
+      "timestamp_role": "open",
+      "bar_seconds": 900,
+      "price_adjustment": "synthetic",
+      "expected_sha256": "9b76502efccc81fe7989dc946d83bf31f27503bf53c6ba5734ebe7519fa1d461",
+      "expected_rows": 24,
+      "expected_start": "2026-01-01T00:00:00+00:00",
+      "expected_end": "2026-01-01T05:45:00+00:00",
+      "allowed_gaps": []
+    },
+    "SYNTH-B": {
+      "kind": "synthetic",
+      "source": "Committed locally generated deterministic fixture",
+      "license": "Repository research fixture",
+      "currency": "SIM",
+      "normalized_timezone": "UTC",
+      "timestamp_role": "open",
+      "bar_seconds": 900,
+      "price_adjustment": "synthetic",
+      "expected_sha256": "9b76502efccc81fe7989dc946d83bf31f27503bf53c6ba5734ebe7519fa1d461",
+      "expected_rows": 24,
+      "expected_start": "2026-01-01T00:00:00+00:00",
+      "expected_end": "2026-01-01T05:45:00+00:00",
+      "allowed_gaps": []
+    }
+  }
+}

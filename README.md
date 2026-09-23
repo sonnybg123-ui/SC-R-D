@@ -4,7 +4,7 @@ SC Trading R&D is a research-first **paper-trading lab** for turning trading ide
 
 ## Status
 
-**Phase 1 — Foundation: operational locally**
+**Paper research platform; real-data gateway under verification**
 
 The codebase deliberately has **no broker connection and no live-order path**. The first job is to learn what survives proper testing.
 
@@ -18,7 +18,7 @@ The codebase deliberately has **no broker connection and no live-order path**. T
 - Deterministic experiment IDs so changed assumptions cannot masquerade as the same test
 - OHLC CSV loader
 - Fixed-plan historical resolver with explicit same-candle ambiguity handling
-- Five-desk R&D operating model: Victor, Alpha, Beta, Structure, Ledger
+- Five-desk R&D operating model: Vic, Alpha, Beta, Ben, Jah
 - CLI tools
 - Automated pytest suite
 - GitHub Actions test workflow
@@ -167,3 +167,26 @@ JSON results and a Markdown comparison. The final holdout is excluded by default
 
 See [portfolio replay](docs/PORTFOLIO_REPLAY.md) for synchronized data requirements,
 timing, holdout opt-in and explicit end-of-run position policies.
+
+## Paper-only cloud runner
+
+The prepared, unpublished GitHub Actions workflow is designed to run the committed synthetic workload hourly at minute 17 UTC, manually via **Actions → Paper-only cloud R&D → Run workflow**, and on relevant main-branch changes. Your PC can be switched off. Confirm a green cloud run after publishing; schedules are best effort, not guaranteed start times.
+
+The full tests run first, followed by provenance/quality gates, Strategy Lab and portfolio walk-forward evaluation with protected final holdout and reconciled paper ledgers. The canonical department is **Vic, Alpha, Beta, Ben and Jah**; `victor` remains Vic's legacy technical identifier. Ledger is infrastructure, not staff.
+
+Download the uniquely named run artifact for Markdown/JSON reports, test results and SQLite paper ledgers. Retention is 14 days. Synthetic outputs are TEST_ONLY and never count as findings or evidence. No broker, API keys, separate hosting service or live-money path is used.
+
+```bash
+python -m sc_rd data-check examples/walkforward.json
+python -m sc_rd cloud --output reports/my-unique-run
+```
+
+See [cloud operation and limitations](docs/CLOUD_RESEARCH.md) and [roadmap](docs/ROADMAP.md).
+
+## Real-market data gateway
+
+**Synthetic examples are software tests only: TEST_ONLY, never trading evidence.** Real research requires VERIFIED REAL datasets through `market-fetch`, `market-lab` or `market-portfolio`. The Twelve Data adapter performs strict single-session US OHLC/provenance/coverage checks and SHA-256 caching. It does not silently replace missing data with fixtures. See [gateway scope and usage](docs/MARKET_DATA.md).
+
+The manual Twelve Data auth check succeeded using the existing `twelvedata_api` GitHub secret. A complete real-dataset/research smoke run remains unverified until explicitly reported. T212 Demo authentication succeeded separately; read-only metadata integration and Practice order placement are NOT IMPLEMENTED. No live-money execution path exists. Canonical staff: Victor Price / Vic, Alpha, Beta, Benjamin Vale / Ben, Jah. Structure is a concept; ledger is software infrastructure.
+
+The earlier hourly cloud runner remains local, unpublished work. Its synthetic outputs are TEST_ONLY. This gateway milestone does not activate a schedule or autonomous trading.

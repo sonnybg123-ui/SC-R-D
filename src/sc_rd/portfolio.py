@@ -201,7 +201,7 @@ def replay_experiment(config: dict, experiment: dict, data: dict, grid: list,
 def report(result: dict) -> str:
     def clean(value):
         return str(value).replace("|", "\\|").replace("\n", " ").replace("\r", " ")
-    lines = ["# SC Trading R&D shared-cash replay", "", "Offline paper research only. Synthetic fixtures are wiring checks, not market evidence.", "",
+    lines = ["TEST_ONLY — software-test output; excluded from trading evidence.", "", "# SC Trading R&D shared-cash replay", "", "Offline paper research only. Synthetic fixtures are wiring checks, not market evidence.", "",
              f"Run: `{result['run_id']}`", f"Engine: `{result['identity']['engine']}`",
              f"Configuration: `{result['identity']['config']}`", f"Period: **{result['period']}**. Holdout: **{result['holdout_status']}**.",
              f"End policy: `{result['method']['end_policy']}`.", "",
@@ -251,7 +251,7 @@ def run_portfolio(config_path: str | Path, output_dir: str | Path, *, period: st
     try:
         trials = [replay_experiment(config, trial, data, grid, start, end, destination / f"portfolio-{i:03d}.db")
                   for i, trial in enumerate(config["experiments"])]
-        result = {"mode": "paper-research-only", "schema_version": 1, "run_id": run_id,
+        result = {"data_classification": "SYNTHETIC", "evidence_status": "TEST_ONLY", "evidence_eligible": False, "mode": "paper-research-only", "schema_version": 1, "run_id": run_id,
                   "identity": identity, "method": method, "period": period,
                   "holdout_status": "withheld" if period == "development" else "consumed-do-not-retune",
                   "experiments": trials}

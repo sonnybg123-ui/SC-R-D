@@ -78,7 +78,7 @@ def read_dataset(path: Path) -> tuple[list[Candle], list[datetime], str]:
 def engine_fingerprint() -> str:
     root = Path(__file__).parent
     # Include all package modules, including fill and validation dependencies.
-    manifest = {p.name: digest(p.read_bytes()) for p in sorted(root.glob("*.py"))}
+    manifest = {p.relative_to(root).as_posix(): digest(p.read_bytes()) for p in sorted(root.rglob("*.py"))}
     return digest(canonical(manifest).encode())
 
 
@@ -184,7 +184,7 @@ def evaluate(config: dict, base_dir: Path) -> dict:
 def markdown(result: dict) -> str:
     def cell(value: object) -> str:
         return str(value).replace("|", "\\|").replace("\n", " ").replace("\r", " ")
-    lines = ["# SC Trading R&D research report", "", "Paper research only. No broker connection or live execution.", "",
+    lines = ["TEST_ONLY — software-test output; excluded from trading evidence.", "", "# SC Trading R&D research report", "", "Paper research only. No broker connection or live execution.", "",
              f"Run: `{result['run_id']}`", f"Dataset SHA-256: `{result['dataset_sha256']}`",
              f"Configuration SHA-256: `{result['config_sha256']}`", f"Engine SHA-256: `{result['engine_sha256']}`", "",
              f"Holdout begins: {cell(result['config']['split_at'])}",

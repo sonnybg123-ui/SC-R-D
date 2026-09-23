@@ -122,6 +122,24 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--period", choices=["development", "holdout"], default="development",
                    help="holdout explicitly consumes the reserved final period")
     p.set_defaults(func=_portfolio)
+    from .cloud import configure as configure_cloud
+    configure_cloud(subs)
+    import json
+    from .market_data import acquire, run_verified_lab, run_verified_portfolio
+    p = subs.add_parser('market-fetch', help='explicitly fetch and verify real US intraday data')
+    p.add_argument('request', type=Path)
+    p.add_argument('--cache', type=Path, default=Path('data/cache'))
+    p.set_defaults(func=lambda a: print(acquire(json.loads(a.request.read_text(encoding='utf-8')), a.cache)))
+    p = subs.add_parser('market-lab', help='run protected-holdout research on a verified real cache')
+    p.add_argument('cache', type=Path)
+    p.add_argument('config', type=Path)
+    p.add_argument('--output', type=Path, default=Path('reports'))
+    p.set_defaults(func=lambda a: print(run_verified_lab(a.cache,a.config,a.output)))
+    p = subs.add_parser('market-portfolio', help='verified single-instrument shared-cash paper replay')
+    p.add_argument('cache', type=Path)
+    p.add_argument('config', type=Path)
+    p.add_argument('--output', type=Path, default=Path('reports'))
+    p.set_defaults(func=lambda a: print(run_verified_portfolio(a.cache,a.config,a.output)))
     return parser
 
 

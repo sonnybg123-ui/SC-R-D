@@ -95,7 +95,7 @@ def test_csv_validation(tmp_path):
 
 
 def test_paper_research_pipeline(tmp_path):
-    assert set(DESKS) == {'victor', 'alpha', 'beta', 'structure', 'ledger'}
+    assert set(DESKS) == {'victor', 'alpha', 'beta', 'ben', 'jah'}
     candles = load_ohlc_csv(Path(__file__).resolve().parents[1] / 'data/example_ohlc.csv')
     journal = tmp_path / 'journal.jsonl'
     for desk in DESKS.values():

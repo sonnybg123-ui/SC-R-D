@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "portfolio": "portfolio.json",
+  "data_manifest": "data_manifest.json",
+  "baseline": "Victor baseline portfolio",
+  "train_bars": 8,
+  "test_bars": 4,
+  "minimum_training_trades": 1
+}

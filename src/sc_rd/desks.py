@@ -12,8 +12,8 @@ class ResearchDesk:
 
 DESKS = {
     "victor": ResearchDesk(
-        "Victor",
-        "Lead trader/teacher: translate experiments into practical lessons.",
+        "Vic",
+        "Victor Price / Vic: R&D lead, integrator, evidence adjudicator, head trader and teacher.",
         "controlled",
     ),
     "alpha": ResearchDesk(
@@ -26,14 +26,6 @@ DESKS = {
         "High-risk specialist: test unconventional sizing and volatility assumptions in paper only.",
         "aggressive-paper-only",
     ),
-    "structure": ResearchDesk(
-        "Structure",
-        "Market-structure desk: HH/HL/LH/LL, swing points, invalidation and timeframe discipline.",
-        "evidence-first",
-    ),
-    "ledger": ResearchDesk(
-        "Ledger",
-        "Journal and statistics desk: make every experiment measurable and comparable.",
-        "audit",
-    ),
+    "ben": ResearchDesk("Ben", "Benjamin Vale / Ben: fundamental, catalyst, materiality and Guardian perspective.", "evidence-first"),
+    "jah": ResearchDesk("Jah", "Jah: execution operations, data quality, reconciliation and log integrity.", "audit"),
 }
