@@ -69,3 +69,10 @@ Next: verify cloud execution, then define reviewed agent-to-experiment proposals
 Implemented locally: Twelve Data OHLC adapter, explicit source/identity checks, single-session quality gates, provenance SHA-256, verified cache reuse, protected-holdout Lab and single-instrument portfolio adapters, and TEST_ONLY software-output classification. Authentication passed. A genuine cached dataset plus non-holdout research smoke run is still required before calling this milestone complete.
 
 T212 metadata integration, independently verified broker identity mapping and Practice order placement remain unimplemented. No live order path exists. Staff: Vic / Alpha / Beta / Ben / Jah. Next milestone requires Sonny's review; do not automatically start a Practice broker bridge.
+
+## Real-data scheduled evidence milestone
+
+Implemented: hourly/manual real-data experiment workflow; five-bot queue; internal paper replay; price-free per-agent handoffs; cumulative outcome history and duplicate detection; Vic summary. See [REAL_RESEARCH.md](../REAL_RESEARCH.md).
+
+Next: connect existing ChatGPT automations to artifact review and reviewed queue revisions. Add verified GBP conversion and point-in-time catalyst data. Persistent forward-paper accounts and durable archival storage remain separate future work. No Trading 212 order execution is authorized by this milestone.
+

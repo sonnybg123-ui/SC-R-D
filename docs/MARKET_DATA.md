@@ -24,7 +24,7 @@ Install the project dependencies, including Windows timezone data. Use an alread
 
 ```json
 {
-  "provider_symbol": "AAPL", "exchange": "NASDAQ", "mic_code": "XNAS",
+  "provider_symbol": "AAPL", "exchange": "NASDAQ", "mic_code": "XNGS",
   "currency": "USD", "instrument_type": "Common Stock", "timeframe": "15min",
   "start": "2026-09-23T13:30:00+00:00", "end": "2026-09-23T19:45:00+00:00",
   "adjustment_policy": "none", "max_age_seconds": 86400
