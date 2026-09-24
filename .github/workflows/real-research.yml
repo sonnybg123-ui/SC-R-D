@@ -1,0 +1,90 @@
+name: Scheduled verified real-market research
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: real-research-history
+  cancel-in-progress: false
+jobs:
+  research:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install and test
+        run: |
+          python -m pip install -e . pytest
+          python -m pytest -q
+      - name: Restore prior evidence without silently resetting history
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          CURRENT_RUN: ${{ github.run_id }}
+        shell: python
+        run: |
+          import json, os, subprocess
+          from pathlib import Path
+          repo = os.environ['REPOSITORY']
+          def api(path):
+              return json.loads(subprocess.check_output(['gh', 'api', path], stderr=subprocess.DEVNULL))
+          artifacts = api(f'repos/{repo}/actions/artifacts?per_page=100')['artifacts']
+          matches = [a for a in artifacts if a['name']=='real-research-state' and not a['expired']]
+          if matches:
+              latest = max(matches, key=lambda a: a['id'])
+              subprocess.run(['gh', 'run', 'download', str(latest['workflow_run']['id']),
+                              '--repo', repo, '--name', 'real-research-state', '--dir', 'previous'], check=True)
+              if not Path('previous/state.json').is_file():
+                  raise SystemExit('History artifact missing state.json; refusing reset.')
+              Path('history-args.txt').write_text('--history previous/state.json')
+          else:
+              runs = api(f'repos/{repo}/actions/workflows/real-research.yml/runs?per_page=2')['workflow_runs']
+              if any(str(r['id']) != os.environ['CURRENT_RUN'] for r in runs):
+                  raise SystemExit('Prior run exists but history is unavailable; restore it before continuing.')
+              Path('history-args.txt').write_text('')
+      - name: Execute frozen five-bot paper experiments
+        env:
+          TWELVE_DATA_API_KEY: ${{ secrets.twelvedata_api }}
+        shell: python
+        run: |
+          import subprocess, sys
+          from pathlib import Path
+          args = Path('history-args.txt').read_text().split()
+          raise SystemExit(subprocess.call([sys.executable, '-m', 'sc_rd.real_cloud',
+              '--output', 'evidence', '--scratch', 'private-work', *args]))
+      - name: Vic department report
+        if: always()
+        shell: python
+        run: |
+          import os
+          from pathlib import Path
+          report = Path('evidence/report.md')
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as out:
+              out.write(report.read_text() if report.exists() else 'Research did not execute. Inspect failed setup/history/test step. No evidence accepted.')
+      - name: Preserve cumulative evidence history
+        if: always() && hashFiles('evidence/state.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: real-research-state
+          path: evidence/state.json
+          retention-days: 90
+          overwrite: false
+          if-no-files-found: error
+      - name: Publish price-free evidence handoffs
+        if: always() && hashFiles('evidence/results.json') != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: five-bot-evidence-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidence/
+          retention-days: 90
+          overwrite: false
+          if-no-files-found: error
