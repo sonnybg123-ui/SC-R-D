@@ -39,3 +39,10 @@ pytest-cache-files-*/
 
 # Downloaded research datasets and provider cache
 data/cache/
+
+# Scheduled research runtime files
+private-work/
+evidence/
+previous/
+history-args.txt
+

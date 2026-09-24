@@ -4,7 +4,7 @@ SC Trading R&D is a research-first **paper-trading lab** for turning trading ide
 
 ## Status
 
-**Paper research platform; real-data gateway under verification**
+**Paper research platform with verified real-data smoke test and scheduled evidence runner**
 
 The codebase deliberately has **no broker connection and no live-order path**. The first job is to learn what survives proper testing.
 
@@ -81,23 +81,7 @@ Live-money execution is intentionally out of scope until the paper-trading evide
 
 ## Research scope and fill assumptions
 
-This foundation implements sizing, paper-trade records, historical fixed-plan
-resolution and analysis. It is not yet a scanner, autonomous desk, portfolio risk
-manager, or event-driven paper broker. Desks currently define research roles.
-
-The historical resolver assumes an existing position before the supplied candles.
-Supply chronological, unique candles from one instrument. A stop crossed at the
-open fills at that open (losses may exceed 1R); a target crossed at the open fills
-at the target without favorable price improvement. Other same-candle conflicts
-use the chosen ambiguity policy. Fees, spreads, liquidity and further slippage
-are not modelled. Results are gross research estimates, not execution guarantees.
-R uses initial stop distance times actual quantity, not the unused risk budget.
-Profit factor is calculated in R, not cash. No broker or external data connection
-is included. Keep local journals and private datasets outside version control.
-
-Target architecture:
-Market Data -> Scanner -> Strategy Lab -> Victor / Alpha / Beta experiments ->
-Risk Engine -> Paper Broker -> Ledger -> Performance Analysis -> Research Conclusions.
+The original fixed-plan resolver is a basic software-test tool. The later Strategy Lab, internal paper broker and chronological portfolio replay implement costs, causality and risk controls as described below. All five bots can run versioned internal-paper experiments; Vic is the sole department reporter. No live-money execution is available.
 
 ## Batch research pipeline
 
@@ -168,25 +152,19 @@ JSON results and a Markdown comparison. The final holdout is excluded by default
 See [portfolio replay](docs/PORTFOLIO_REPLAY.md) for synchronized data requirements,
 timing, holdout opt-in and explicit end-of-run position policies.
 
-## Paper-only cloud runner
+## Synthetic cloud workload (local preparation only)
 
-The prepared, unpublished GitHub Actions workflow is designed to run the committed synthetic workload hourly at minute 17 UTC, manually via **Actions → Paper-only cloud R&D → Run workflow**, and on relevant main-branch changes. Your PC can be switched off. Confirm a green cloud run after publishing; schedules are best effort, not guaranteed start times.
-
-The full tests run first, followed by provenance/quality gates, Strategy Lab and portfolio walk-forward evaluation with protected final holdout and reconciled paper ledgers. The canonical department is **Vic, Alpha, Beta, Ben and Jah**; `victor` remains Vic's legacy technical identifier. Ledger is infrastructure, not staff.
-
-Download the uniquely named run artifact for Markdown/JSON reports, test results and SQLite paper ledgers. Retention is 14 days. Synthetic outputs are TEST_ONLY and never count as findings or evidence. No broker, API keys, separate hosting service or live-money path is used.
-
-```bash
-python -m sc_rd data-check examples/walkforward.json
-python -m sc_rd cloud --output reports/my-unique-run
-```
-
-See [cloud operation and limitations](docs/CLOUD_RESEARCH.md) and [roadmap](docs/ROADMAP.md).
+The older synthetic cloud workflow is unpublished. Synthetic runs remain TEST_ONLY, not learning evidence. The real-data schedule is described in REAL_RESEARCH.md.
 
 ## Real-market data gateway
 
 **Synthetic examples are software tests only: TEST_ONLY, never trading evidence.** Real research requires VERIFIED REAL datasets through `market-fetch`, `market-lab` or `market-portfolio`. The Twelve Data adapter performs strict single-session US OHLC/provenance/coverage checks and SHA-256 caching. It does not silently replace missing data with fixtures. See [gateway scope and usage](docs/MARKET_DATA.md).
 
-The manual Twelve Data auth check succeeded using the existing `twelvedata_api` GitHub secret. A complete real-dataset/research smoke run remains unverified until explicitly reported. T212 Demo authentication succeeded separately; read-only metadata integration and Practice order placement are NOT IMPLEMENTED. No live-money execution path exists. Canonical staff: Victor Price / Vic, Alpha, Beta, Benjamin Vale / Ben, Jah. Structure is a concept; ledger is software infrastructure.
+The manual Twelve Data auth check succeeded using the existing `twelvedata_api` GitHub secret. The genuine AAPL smoke run passed on 24 September 2026; see REAL_RESEARCH.md for the fingerprint and limitations. T212 Demo authentication succeeded separately; read-only metadata integration and Practice order placement are NOT IMPLEMENTED. No live-money execution path exists. Canonical staff: Victor Price / Vic, Alpha, Beta, Benjamin Vale / Ben, Jah. Structure is a concept; ledger is software infrastructure.
 
-The earlier hourly cloud runner remains local, unpublished work. Its synthetic outputs are TEST_ONLY. This gateway milestone does not activate a schedule or autonomous trading.
+The earlier hourly cloud runner remains local, unpublished work. Its synthetic outputs are TEST_ONLY. The scheduled real-data workflow runs historical paper experiments; no autonomous broker trading is enabled.
+
+## Scheduled real-market paper experiments
+
+The hourly GitHub Actions runner evaluates five versioned internal-paper experiments on REAL + VERIFIED AAPL data and preserves cumulative evidence for Vic, Alpha, Beta, Ben and Jah. Vic is the sole department reporter. This is historical research, not a new autonomous AI service or continuous forward account. See [operating model, artifacts and limits](REAL_RESEARCH.md). GBP conversion, catalyst data and automatic ChatGPT handoff remain unimplemented.
+
