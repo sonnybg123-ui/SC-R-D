@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "portfolio": {
+    "schema_version": 1,
+    "initial_cash": 1000,
+    "limits": {
+      "max_trade_risk": 25,
+      "max_total_risk": 50,
+      "max_gross_exposure": 2000,
+      "max_positions": 2,
+      "max_drawdown": 500,
+      "max_mark_age_seconds": 3600
+    },
+    "costs": {
+      "fee_per_side": 0.1,
+      "fee_bps": 1,
+      "spread_bps": 2,
+      "slippage_bps": 1
+    },
+    "holdout_bars": 4,
+    "end_policy": "liquidate",
+    "minimum_trades": 30
+  },
+  "experiments": [
+    {
+      "agent": "victor",
+      "version": "1.0.0",
+      "hypothesis": "Controlled completed-close breakout baseline",
+      "risk_budget": 15,
+      "strategy": {
+        "name": "victor-v1",
+        "desk": "victor",
+        "lookback": 3,
+        "reward_r": 1.5,
+        "max_holding_bars": 2,
+        "direction": "both"
+      }
+    },
+    {
+      "agent": "alpha",
+      "version": "1.0.0",
+      "hypothesis": "Aggressive short-lookback breakout after costs",
+      "risk_budget": 25,
+      "strategy": {
+        "name": "alpha-v1",
+        "desk": "alpha",
+        "lookback": 2,
+        "reward_r": 2,
+        "max_holding_bars": 2,
+        "direction": "both"
+      }
+    },
+    {
+      "agent": "beta",
+      "version": "1.0.0",
+      "hypothesis": "Longer-lookback low-target falsification control",
+      "risk_budget": 25,
+      "strategy": {
+        "name": "beta-v1",
+        "desk": "beta",
+        "lookback": 5,
+        "reward_r": 1,
+        "max_holding_bars": 3,
+        "direction": "both"
+      }
+    },
+    {
+      "agent": "ben",
+      "version": "1.0.0",
+      "hypothesis": "Technical control only; catalyst evidence unavailable",
+      "risk_budget": 15,
+      "strategy": {
+        "name": "ben-v1",
+        "desk": "ben",
+        "lookback": 4,
+        "reward_r": 1.5,
+        "max_holding_bars": 2,
+        "direction": "both"
+      }
+    },
+    {
+      "agent": "jah",
+      "version": "1.0.0",
+      "hypothesis": "Short-holding execution and integrity control",
+      "risk_budget": 10,
+      "strategy": {
+        "name": "jah-v1",
+        "desk": "jah",
+        "lookback": 3,
+        "reward_r": 1,
+        "max_holding_bars": 1,
+        "direction": "both"
+      }
+    }
+  ]
+}
